@@ -12,7 +12,30 @@ const countryElement = document.querySelector("#country");
 const umidityElement = document.querySelector("#umidity span");
 const windElement = document.querySelector("#wind span");
 const weatherContainer = document.querySelector("#weather-data");
+const sensacao = document.querySelector("#sensacao");
+const tempMax = document.querySelector("#temp-max");
+const tempMin = document.querySelector("#temp-min");
+const diaSemana = document.querySelector("#dia-semana");
+const hora = document.querySelector(".hora");
+//
+//
+const diasDaSemana = [
+  "Domingo",
+  "Segunda-Feira",
+  "Terça-Feira",
+  "Quarta-Feira",
+  "Quinta-Feira",
+  "Sexta-Feira",
+  "Sábado",
+];
+const hoje = new Date();
+const diaDaSemanaString = diasDaSemana[hoje.getDay()];
 
+const dataDeHoje = new Date();
+const horaAtual = dataDeHoje.toLocaleTimeString([], {
+  hour: "2-digit",
+  minute: "2-digit",
+});
 const getWeatherData = async (city) => {
   const apiWeatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}&lang=pt_br`;
 
@@ -36,8 +59,19 @@ const showWeatherData = async (city) => {
     ` https://flagsapi.com/${data.sys.country.toUpperCase()}/flat/64.png
   `
   );
-  umidityElement.innerText = `${data.main.humidity}%`;
-  windElement.innerText = `${data.wind.speed}km/h`;
+  umidityElement.innerText = `Humidade de ${data.main.humidity}%`;
+  windElement.innerText = `Vento à ${data.wind.speed}km/h`;
+  let sensacaoTratada = data.main.feels_like;
+  sensacaoTratada = Math.round(sensacaoTratada);
+  sensacao.innerText = `Sensação térmica de ${sensacaoTratada} °C`;
+  diaSemana.innerText = diaDaSemanaString;
+  hora.innerText = horaAtual;
+  let horaMaxTratada = data.main.temp_max;
+  horaMaxTratada = Math.round(horaMaxTratada) + 2;
+  tempMax.innerText = `Temp max: ${horaMaxTratada} °C`;
+  let horaMinTratada = data.main.temp_min;
+  horaMinTratada = Math.round(horaMinTratada) - 2;
+  tempMin.innerText = `Temp min: ${horaMinTratada} °C`;
   weatherContainer.classList.remove("hide");
 };
 searchBtn.addEventListener("click", (e) => {
